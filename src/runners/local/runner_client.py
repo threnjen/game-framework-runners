@@ -1,4 +1,4 @@
-from contracts.runner_client_abc import RunnerClientABC
+from game_contracts.runner_client_abc import RunnerClientABC
 
 
 class LocalRunnerClient(RunnerClientABC):

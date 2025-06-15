@@ -1,4 +1,4 @@
-from contracts.runner_server_abc import RunnerServerABC
+from game_contracts.runner_server_abc import RunnerServerABC
 
 
 class LocalRunnerServer(RunnerServerABC):

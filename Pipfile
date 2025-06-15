@@ -1,0 +1,13 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+game-contracts = {file = "../game-contracts/dist/game_contracts-0.1.0.tar.gz"}
+
+[dev-packages]
+black = "*"
+ipykernel = "*"
+python-dotenv = "*"
+isort = "*"
