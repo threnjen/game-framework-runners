@@ -5,14 +5,12 @@ class CloudRunnerClient(RunnerClientABC):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def connect(self):
-        # Implement the logic to connect to the cloud runner client
-        pass
+    def connect_to_server(self, server_address: str) -> None: ...
 
-    def disconnect(self):
-        # Implement the logic to disconnect from the cloud runner client
-        pass
+    def disconnect_from_server(self) -> None: ...
 
-    def send_command(self, command):
-        # Implement the logic to send a command to the cloud runner client
-        pass
+    def send_request(self, request: dict) -> dict: ...
+
+    def receive_response(self) -> dict: ...
+
+    def get_client_status(self) -> str: ...
