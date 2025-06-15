@@ -1,14 +1,18 @@
-from contracts.runner_server_abc import RunnerServerABC
+from abc import ABC, abstractmethod
 
 
-class LocalRunnerServer(RunnerServerABC):
-
+class RunnerServerABC(ABC):
+    @abstractmethod
     def start_server(self) -> None: ...
 
+    @abstractmethod
     def stop_server(self) -> None: ...
 
+    @abstractmethod
     def restart_server(self) -> None: ...
 
+    @abstractmethod
     def get_server_status(self) -> str: ...
 
+    @abstractmethod
     def handle_client_request(self, request: dict) -> dict: ...

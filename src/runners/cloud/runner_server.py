@@ -1,4 +1,4 @@
-from game_contracts.runner_server_abc import RunnerServerABC
+from contracts.runner_server_abc import RunnerServerABC
 
 
 class CloudRunnerServer(RunnerServerABC):

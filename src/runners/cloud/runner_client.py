@@ -1,4 +1,4 @@
-from game_contracts.runner_client_abc import RunnerClientABC
+from contracts.runner_client_abc import RunnerClientABC
 
 
 class CloudRunnerClient(RunnerClientABC):

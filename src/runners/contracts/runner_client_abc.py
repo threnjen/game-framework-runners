@@ -1,16 +1,18 @@
-from contracts.runner_client_abc import RunnerClientABC
+from abc import ABC, abstractmethod
 
 
-class LocalRunnerClient(RunnerClientABC):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
+class RunnerClientABC(ABC):
+    @abstractmethod
     def connect_to_server(self, server_address: str) -> None: ...
 
+    @abstractmethod
     def disconnect_from_server(self) -> None: ...
 
+    @abstractmethod
     def send_request(self, request: dict) -> dict: ...
 
+    @abstractmethod
     def receive_response(self) -> dict: ...
 
+    @abstractmethod
     def get_client_status(self) -> str: ...
