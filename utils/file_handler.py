@@ -43,133 +43,114 @@ class FileHandler(ABC):
             raise ValueError("Unsupported file type")
 
     @property
-    @abstractmethod
     def file_missing_exception(self) -> Exception:
         """
         The exception to raise when a file is missing.
         """
         pass
 
-    @abstractmethod
     def check_file_exists(self, file_path: str) -> bool:
         """
         Check if a file exists.
         """
         pass
 
-    @abstractmethod
     def get_file_path(self, file_path: str) -> str:
         """
         Get the file path.
         """
         pass
 
-    @abstractmethod
     def get_last_modified(self, file_path: str) -> datetime:
         """
         Get the last modified time of the file.
         """
         pass
 
-    @abstractmethod
     def load_json(self, file_path: str) -> Union[dict, list]:
         """
         Load a JSON file.
         """
         pass
 
-    @abstractmethod
     def load_jsonl(self, file_path: str) -> Union[dict, list]:
         """
         Load a JSONL file.
         """
         pass
 
-    @abstractmethod
     def load_xml(self, file_path: str) -> Union[dict, list]:
         """
         Load an XML file.
         """
         pass
 
-    @abstractmethod
     def load_csv(self, file_path: str):
         """
         Load a CSV file.
         """
         pass
 
-    @abstractmethod
     def load_pkl(self, file_path: str) -> Union[dict, list]:
         """
         Load a pickle file.
         """
         pass
 
-    @abstractmethod
     def load_tfstate(self, file_path: str) -> Union[dict, list]:
         """
         Load a TFState file.
         """
         pass
 
-    @abstractmethod
     def save_json(self, file_path: str, data: Union[dict, list]):
         """
         Save a JSON file.
         """
         pass
 
-    @abstractmethod
     def save_jsonl(self, file_path: str, data: Union[dict, list]):
         """
         Save a JSONL file.
         """
         pass
 
-    @abstractmethod
     def save_xml(self, file_path: str, data: Union[dict, list]):
         """
         Save an XML file.
         """
         pass
 
-    @abstractmethod
     def save_csv(self, file_path: str, data: Union[dict, list]):
         """
         Save a CSV file.
         """
         pass
 
-    @abstractmethod
     def save_pkl(self, file_path: str, data: Union[dict, list]):
         """
         Save a pickle file.
         """
         pass
 
-    @abstractmethod
     def file_exists(self, file_path: str) -> bool:
         """
         Check if a file exists.
         """
         pass
 
-    @abstractmethod
     def delete_file(self, file_path: str):
         """
         Delete a file.
         """
         pass
 
-    @abstractmethod
     def list_files(self, directory: str) -> list:
         """
         List files in a directory.
         """
         pass
 
-    @abstractmethod
     def make_directory(self, directory: str):
         """
         Make a directory.
