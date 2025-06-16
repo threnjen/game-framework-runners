@@ -1,47 +1,25 @@
-from game_contracts.runner_client_abc import RunnerClientABC
 import requests
 import time
+from game_contracts.runner_client_abc import RunnerClientABC
 
 
 class LocalRunnerClient(RunnerClientABC):
+    def __init__(self, fastapi_url="http://localhost:8000", player_id="player1"):
+        self.fastapi_url = fastapi_url
+        self.player_id = player_id
 
-    def __init__(self, player_id) -> None:
-        super().__init__()
-        self.player_id = "player_1"
-
-    def poll_for_input(self) -> None:
-
+    def poll_for_server_response(self) -> dict:
         while True:
             res = requests.get(
-                "http://localhost:8000/get_available_actions",
+                f"{self.fastapi_url}/poll_to_client",
                 params={"player_id": self.player_id},
             )
-            actions = res.json().get("available_actions", [])
-            if actions:
-                break
-            time.sleep(1)
-        return actions
+            if res.status_code == 200:
+                return res.json()
+            time.sleep(0.5)
 
-    def request_user_action(self, actions) -> str:
-        print(f"Available actions: {actions}")
-        choice = input("Choose action: ")
-        while choice not in actions:
-            choice = input("Invalid. Choose again: ")
-
-    def post_message_to_server(self, choice) -> None:
+    def send_action_to_server(self, action: dict):
         requests.post(
-            f"http://localhost:8000/post_action",
-            params={"player_id": self.player_id},
-            json=choice,
+            f"{self.fastapi_url}/post_from_client",
+            json={**action, "player_id": self.player_id},
         )
-
-
-if __name__ == "__main__":
-    player_id = "player_1"
-
-    runner_client = LocalRunnerClient(player_id)
-
-    while True:
-        actions = runner_client.poll_for_input()
-        choice = runner_client.request_user_action(actions)
-        response = runner_client.push_response(choice)

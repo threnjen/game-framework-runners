@@ -4,24 +4,24 @@ from game_contracts.runner_server_abc import RunnerServerABC
 
 
 class LocalRunnerServer(RunnerServerABC):
-    def __init__(self, server_url="http://localhost:8000"):
-        self.server_url = server_url
+    def __init__(self, fastapi_url="http://localhost:8000"):
+        self.fastapi_url = fastapi_url
 
-    def poll_for_message(self) -> dict:
-        """Poll until a message is available from a client"""
+    def poll_for_message_from_client(self) -> dict:
+        """Poll the FastAPI server for incoming messages from client"""
         while True:
             try:
-                res = requests.get(f"{self.server_url}/poll_from_server")
+                res = requests.get(f"{self.fastapi_url}/poll_from_server")
                 if res.status_code == 200:
                     return res.json()
-            except Exception:
-                pass
+            except Exception as e:
+                print("Error polling for message:", e)
             time.sleep(0.5)
 
     def push_message_to_client(self, player_id: str, payload: dict) -> None:
-        """Push message to a specific client (they will poll for it)"""
+        """Send a message to a specific client (they poll for it)"""
         res = requests.post(
-            f"{self.server_url}/push_to_client",
+            f"{self.fastapi_url}/push_to_client",
             params={"player_id": player_id},
             json=payload,
         )
