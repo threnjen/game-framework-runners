@@ -50,7 +50,7 @@
         "game-contracts": {
             "file": "../game-contracts/dist/game_contracts-0.1.0.tar.gz",
             "hashes": [
-                "sha256:223809adc9855b06c972f40b27efee0854150d5265ddcb29e09bcff418cee69c"
+                "sha256:0cdf11aae9d6a04e7a305e06eb529292c645ea5a94c863804dcb1b60a59f5981"
             ]
         },
         "h11": {

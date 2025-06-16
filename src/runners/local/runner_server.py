@@ -31,7 +31,7 @@ class LocalRunnerServer(RunnerServerABC):
         return {"available_actions": actions or []}
 
     @app.post("/set_actions")
-    async def set_actions(self, player_id: str, request: Request):
+    async def push_response(self, player_id: str, request: Request):
         actions = await request.json()
         self.pending_actions[player_id] = actions
         return {"status": "actions set"}
