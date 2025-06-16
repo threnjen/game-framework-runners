@@ -1,37 +1,28 @@
+import requests
+import time
 from game_contracts.runner_server_abc import RunnerServerABC
-from fastapi import FastAPI, Request
-import uvicorn
-import asyncio
-
-app = FastAPI()
 
 
 class LocalRunnerServer(RunnerServerABC):
+    def __init__(self, server_url="http://localhost:8000"):
+        self.server_url = server_url
 
-    def __init__(self) -> None:
-        self.pending_actions = {}
-        self.pending_responses = {}
+    def poll_for_message(self) -> dict:
+        """Poll until a message is available from a client"""
+        while True:
+            try:
+                res = requests.get(f"{self.server_url}/poll_from_server")
+                if res.status_code == 200:
+                    return res.json()
+            except Exception:
+                pass
+            time.sleep(0.5)
 
-    @app.get("/poll_for_input")
-    async def poll_for_input(self, player_id: str):
-        while player_id not in self.pending_responses:
-            await asyncio.sleep(0.5)
-        return {"action": self.pending_responses.pop(player_id)}
-
-    @app.post("/post_action")
-    async def receive_action(self, player_id: str, request: Request):
-        action = await request.json()
-        self.pending_responses[player_id] = action
-        return {"status": "received"}
-
-    @app.get("/get_available_actions")
-    async def get_actions(self, player_id: str):
-        # Polling: return actions if available
-        actions = self.pending_actions.pop(player_id, None)
-        return {"available_actions": actions or []}
-
-    @app.post("/set_actions")
-    async def push_response(self, player_id: str, request: Request):
-        actions = await request.json()
-        self.pending_actions[player_id] = actions
-        return {"status": "actions set"}
+    def push_message_to_client(self, player_id: str, payload: dict) -> None:
+        """Push message to a specific client (they will poll for it)"""
+        res = requests.post(
+            f"{self.server_url}/push_to_client",
+            params={"player_id": player_id},
+            json=payload,
+        )
+        res.raise_for_status()

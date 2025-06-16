@@ -7,6 +7,7 @@ name = "pypi"
 fastapi = "*"
 uvicorn = "*"
 game-contracts = {file = "../game-contracts/dist/game_contracts-0.1.0.tar.gz"}
+requests = "*"
 
 [dev-packages]
 black = "*"

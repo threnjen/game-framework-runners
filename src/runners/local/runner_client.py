@@ -28,7 +28,7 @@ class LocalRunnerClient(RunnerClientABC):
         while choice not in actions:
             choice = input("Invalid. Choose again: ")
 
-    def push_response(self) -> None:
+    def post_message_to_server(self, choice) -> None:
         requests.post(
             f"http://localhost:8000/post_action",
             params={"player_id": self.player_id},
@@ -44,4 +44,4 @@ if __name__ == "__main__":
     while True:
         actions = runner_client.poll_for_input()
         choice = runner_client.request_user_action(actions)
-        response = runner_client.push_response()
+        response = runner_client.push_response(choice)
