@@ -18,11 +18,10 @@ class LocalRunnerServer(RunnerServerABC):
                 print("Error polling for message:", e)
             time.sleep(0.5)
 
-    def push_message_to_client(self, player_id: str, payload: dict) -> None:
+    def push_message_to_client(self, payload: dict) -> None:
         """Send a message to a specific client (they poll for it)"""
         res = requests.post(
             f"{self.fastapi_url}/push_to_client",
-            params={"player_id": player_id},
             json=payload,
         )
         res.raise_for_status()
