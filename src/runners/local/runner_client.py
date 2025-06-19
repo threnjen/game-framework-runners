@@ -12,7 +12,7 @@ class LocalRunnerClient(RunnerClientABC):
 
     def get_games_for_player(self, game_configs) -> list:
         res = requests.get(
-            f"{self.fastapi_url}/get_games_for_client",
+            f"{self.fastapi_url}/get_games_for_player",
             json={**game_configs},
         )
         if res.status_code == 200:
@@ -30,10 +30,10 @@ class LocalRunnerClient(RunnerClientABC):
         else:
             return {}
 
-    def load_existing_game(self, game_configs) -> dict:
+    def initialize_server(self, game_id) -> dict:
         res = requests.post(
-            f"{self.fastapi_url}/load_existing_game",
-            json={**game_configs},
+            f"{self.fastapi_url}/initialize_server",
+            json={"game_id": game_id},
         )
         if res.status_code == 200:
             return res.json()
@@ -55,8 +55,8 @@ class LocalRunnerClient(RunnerClientABC):
                     print(f"Request failed: {e}")
                 await asyncio.sleep(0.5)
 
-    def send_action_to_server(self, action: dict) -> None:
+    def post_to_server(self, payload: dict) -> None:
         requests.post(
             f"{self.fastapi_url}/post_from_client",
-            json={**action, "player_id": self.player_id},
+            json={**payload, "player_id": self.player_id},
         )

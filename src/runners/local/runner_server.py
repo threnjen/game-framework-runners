@@ -25,3 +25,13 @@ class LocalRunnerServer(RunnerServerABC):
             json=payload,
         )
         res.raise_for_status()
+
+    def get_game_state(self, game_id: str) -> dict:
+        """Fetch metadata for a specific game"""
+        res = requests.get(
+            f"{self.fastapi_url}/game_state", params={"game_id": game_id}
+        )
+        if res.status_code == 200:
+            return res.json()
+        else:
+            return {}
