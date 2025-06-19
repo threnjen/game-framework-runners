@@ -10,6 +10,36 @@ class LocalRunnerClient(RunnerClientABC):
         self.fastapi_url = fastapi_url
         self.player_id = player_id
 
+    def get_games_for_player(self, game_configs) -> list:
+        res = requests.get(
+            f"{self.fastapi_url}/get_games_for_client",
+            json={**game_configs},
+        )
+        if res.status_code == 200:
+            return res.json()
+        else:
+            return []
+
+    def setup_new_game(self, game_configs: dict) -> dict:
+        res = requests.post(
+            f"{self.fastapi_url}/setup_new_game",
+            json={**game_configs},
+        )
+        if res.status_code == 200:
+            return res.json()
+        else:
+            return {}
+
+    def load_existing_game(self, game_configs) -> dict:
+        res = requests.post(
+            f"{self.fastapi_url}/load_existing_game",
+            json={**game_configs},
+        )
+        if res.status_code == 200:
+            return res.json()
+        else:
+            return {}
+
     async def poll_for_server_response(self) -> dict:
         async with httpx.AsyncClient() as client:
             while True:
@@ -25,7 +55,7 @@ class LocalRunnerClient(RunnerClientABC):
                     print(f"Request failed: {e}")
                 await asyncio.sleep(0.5)
 
-    def send_action_to_server(self, action: dict):
+    def send_action_to_server(self, action: dict) -> None:
         requests.post(
             f"{self.fastapi_url}/post_from_client",
             json={**action, "player_id": self.player_id},
