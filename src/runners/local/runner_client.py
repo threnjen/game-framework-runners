@@ -10,7 +10,7 @@ class LocalRunnerClient(RunnerClientABC):
         self.fastapi_url = fastapi_url
         self.player_id = player_id
 
-    def get_games_for_player(self, game_configs) -> list:
+    def get_games_for_player(self, game_configs) -> dict:
         res = requests.get(
             f"{self.fastapi_url}/get_games_for_player",
             json={**game_configs},
@@ -18,7 +18,7 @@ class LocalRunnerClient(RunnerClientABC):
         if res.status_code == 200:
             return res.json()
         else:
-            return []
+            return {}
 
     def setup_new_game(self, game_configs: dict) -> dict:
         res = requests.post(
@@ -30,15 +30,15 @@ class LocalRunnerClient(RunnerClientABC):
         else:
             return {}
 
-    def initialize_server(self, game_id) -> dict:
+    def initialize_server(self, params) -> bool:
         res = requests.post(
             f"{self.fastapi_url}/initialize_server",
-            json={"game_id": game_id},
+            json={**params},
         )
         if res.status_code == 200:
-            return res.json()
+            return True
         else:
-            return {}
+            return False
 
     async def poll_for_server_response(self) -> dict:
         async with httpx.AsyncClient() as client:
