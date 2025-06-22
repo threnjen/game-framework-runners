@@ -55,7 +55,7 @@ class LocalRunnerClient(RunnerClientABC):
                     print(f"Request failed: {e}")
                 await asyncio.sleep(0.5)
 
-    def post_to_server(self, payload: dict) -> None:
+    def post_to_server(self, game_id: str, payload: dict) -> None:
         requests.post(
             f"{self.fastapi_url}/post_from_client",
             json={**payload, "player_id": self.player_id},
