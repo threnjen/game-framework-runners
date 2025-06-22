@@ -1,8 +1,11 @@
-import requests
-import time
 import asyncio
+import time
+
 import httpx
+import requests
 from game_contracts.runner_client_abc import RunnerClientABC
+
+from runners.utils.retries import safe_get, safe_post
 
 
 class LocalRunnerClient(RunnerClientABC):
@@ -11,9 +14,9 @@ class LocalRunnerClient(RunnerClientABC):
         self.player_id = player_id
 
     def get_games_for_player(self, game_configs) -> dict:
-        res = requests.get(
+        res = safe_get(
             f"{self.fastapi_url}/get_games_for_player",
-            json={**game_configs},
+            params={**game_configs},
         )
         if res.status_code == 200:
             return res.json()
@@ -21,9 +24,9 @@ class LocalRunnerClient(RunnerClientABC):
             return {}
 
     def setup_new_game(self, game_configs: dict) -> dict:
-        res = requests.post(
+        res = safe_post(
             f"{self.fastapi_url}/setup_new_game",
-            json={**game_configs},
+            payload={**game_configs},
         )
         if res.status_code == 200:
             return res.json()
@@ -31,9 +34,9 @@ class LocalRunnerClient(RunnerClientABC):
             return {}
 
     def initialize_server(self, params) -> bool:
-        res = requests.post(
+        res = safe_post(
             f"{self.fastapi_url}/initialize_server",
-            json={**params},
+            payload={**params},
         )
         if res.status_code == 200:
             return True
@@ -56,7 +59,7 @@ class LocalRunnerClient(RunnerClientABC):
                 await asyncio.sleep(0.5)
 
     def post_to_server(self, game_id: str, payload: dict) -> None:
-        requests.post(
+        safe_post(
             f"{self.fastapi_url}/post_from_client",
-            json={**payload, "player_id": self.player_id},
+            payload={**payload, "player_id": self.player_id},
         )

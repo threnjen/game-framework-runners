@@ -1,11 +1,13 @@
 from game_contracts.runner_client_abc import RunnerClientABC
 
+from runners.utils.retries import safe_get, safe_post
+
 
 class CloudRunnerClient(RunnerClientABC):
 
     def poll_for_server_response(self) -> dict: ...
 
-    def post_to_server(self, gmae_id, payload) -> None: ...
+    def post_to_server(self, game_id: str, payload) -> None: ...
 
     def get_games_for_player(self, game_configs) -> dict: ...
 
