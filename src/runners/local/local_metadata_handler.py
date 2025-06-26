@@ -1,0 +1,30 @@
+from game_contracts.metadata_handler_abc import GameMetadataHandlerABC
+import json
+
+
+class GameMetadataHandler(GameMetadataHandlerABC):
+    def __init__(self) -> None:
+        pass
+
+    def get_game_state(self, game_id: str) -> dict:
+        return {}
+
+    def get_games_by_player(self, player_id: str) -> dict:
+        """Placeholder for retrieving games by player ID."""
+        test_games = {
+            "player_1": {
+                "12345": {"game_details": "stuff"},
+                "67890": {"game_details": "stuff"},
+            },
+            "player_2": {"54321": {"game_details": "stuff"}},
+        }
+        return test_games.get(player_id, {})
+
+    def setup_new_game_id(self, game_configs: dict) -> dict:
+        """Placeholder for setting up a new game ID."""
+        return {"game_id": "12345", "queue_id": "67890"}
+
+    def update_game_state(self, game_id: str, game_state: dict) -> None:
+        """Placeholder for updating the game state."""
+        with open(f"{game_id}.json", "w") as f:
+            json.dump(game_state, f)
