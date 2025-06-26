@@ -35,3 +35,11 @@ class GameMetadataHandler(GameMetadataHandlerABC):
         """Placeholder for updating the game state."""
         with open(f"{game_id}.json", "w") as f:
             json.dump(game_state, f)
+
+    def preprocess_action(self, action: str, player_id: str):
+        """Adjust or validate action before logic sees it."""
+        return action
+
+    def filter_state_for_player(self, state: str, player_id: str):
+        """Hide private info, etc."""
+        return state
