@@ -4,21 +4,35 @@ import requests
 from game_contracts.runner_server_abc import RunnerServerABC
 
 from runners.utils.retries import safe_get, safe_post
+from runners.utils.hmacsigner import HMACSigner
+from game_contracts.message import MessageEnvelope, MessageSource
 
 
 class LocalRunnerServer(RunnerServerABC):
     def __init__(self, fastapi_url="http://localhost:8000"):
         self.fastapi_url = fastapi_url
+        self.signer = HMACSigner(secret="your_secret_key")
+        self.sequence_number = 0
 
     def poll_for_message_from_client(self, game_id: str) -> dict:
         """Poll the FastAPI server for incoming messages from client"""
+
         while True:
             try:
                 res = safe_get(
                     f"{self.fastapi_url}/poll_from_server", params={"game_id": game_id}
                 )
                 if res.status_code == 200:
-                    return res.json()
+
+                    envelope = MessageEnvelope(res.json())
+                    if not self.signer.verify(envelope, envelope.signature):
+                        raise ValueError(
+                            "Signature verification failed — rejecting message."
+                        )
+                    if envelope.seq < self.sequence_number:
+                        raise ValueError("Replay detected: sequence number is stale.")
+                    self.sequence_number = envelope.seq
+                    return envelope.payload
             except Exception as e:
                 print("Error polling for message:", e)
             time.sleep(0.5)

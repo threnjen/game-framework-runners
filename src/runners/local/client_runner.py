@@ -4,14 +4,18 @@ import time
 import httpx
 import requests
 from game_contracts.runner_client_abc import RunnerClientABC
+from game_contracts.message import MessageEnvelope, MessageSource
 
 from runners.utils.retries import safe_get, safe_post
+from runners.utils.hmacsigner import HMACSigner
 
 
 class LocalRunnerClient(RunnerClientABC):
     def __init__(self, fastapi_url="http://localhost:8000", player_id="player1"):
         self.fastapi_url = fastapi_url
         self.player_id = player_id
+        self.sequence_number = 0
+        self.signer = HMACSigner(secret="your_secret_key")
 
     def get_games_for_player(self, game_configs) -> dict:
         res = safe_get(
@@ -58,8 +62,21 @@ class LocalRunnerClient(RunnerClientABC):
                     print(f"Request failed: {e}")
                 await asyncio.sleep(0.5)
 
-    def post_to_server(self, game_id: str, payload: dict) -> None:
+    def post_to_server(self, game_id: str, client_id: str, payload: dict) -> None:
+
+        envelope = MessageEnvelope(
+            client_id=client_id,
+            game_id=game_id,
+            source=MessageSource.CLIENT,
+            seq=self.sequence_number,
+            payload={"move": "play_card", "card": "Surge"},
+        )
+
+        envelope.signature = self.signer.sign(envelope)
+
         safe_post(
             f"{self.fastapi_url}/post_from_client",
-            payload={**payload, "player_id": self.player_id},
+            payload=envelope.dict(),
         )
+
+        self.sequence_number += 1
