@@ -1,7 +1,8 @@
-import hmac
 import hashlib
+import hmac
 import json
 from typing import Union
+
 from game_contracts.message import MessageEnvelope
 
 

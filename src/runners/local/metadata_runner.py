@@ -1,5 +1,6 @@
-from game_contracts.metadata_handler_abc import GameMetadataHandlerABC
 import json
+
+from game_contracts.metadata_handler_abc import GameMetadataHandlerABC
 
 
 class GameMetadataHandler(GameMetadataHandlerABC):

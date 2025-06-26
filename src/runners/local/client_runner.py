@@ -3,11 +3,11 @@ import time
 
 import httpx
 import requests
-from game_contracts.runner_client_abc import RunnerClientABC
 from game_contracts.message import MessageEnvelope, MessageSource
+from game_contracts.runner_client_abc import RunnerClientABC
 
-from runners.utils.retries import safe_get, safe_post
 from runners.utils.hmacsigner import HMACSigner
+from runners.utils.retries import safe_get, safe_post
 
 
 class LocalRunnerClient(RunnerClientABC):
