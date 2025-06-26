@@ -1,11 +1,17 @@
 import json
 
 from game_contracts.metadata_handler_abc import GameMetadataHandlerABC
+from functools import lru_cache
 
 
 class GameMetadataHandler(GameMetadataHandlerABC):
     def __init__(self) -> None:
         pass
+
+    @lru_cache(maxsize=128)
+    def get_valid_players(self, game_id: str) -> list:
+        """Placeholder for retrieving valid players for a game."""
+        return ["player_1", "player_2"]
 
     def get_game_state(self, game_id: str) -> dict:
         return {}

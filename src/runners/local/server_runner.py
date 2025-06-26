@@ -1,6 +1,8 @@
 import time
 
 import requests
+
+from .metadata_runner import GameMetadataHandler
 from game_contracts.message import MessageEnvelope, MessageSource
 from game_contracts.runner_server_abc import RunnerServerABC
 
@@ -13,6 +15,7 @@ class LocalRunnerServer(RunnerServerABC):
         self.fastapi_url = fastapi_url
         self.signer = HMACSigner(secret="your_secret_key")
         self.sequence_number = 0
+        self.metadata_handler = GameMetadataHandler()
 
     def poll_for_message_from_client(self, game_id: str) -> dict:
         """Poll the FastAPI server for incoming messages from client"""
@@ -25,6 +28,13 @@ class LocalRunnerServer(RunnerServerABC):
                 if res.status_code == 200:
 
                     envelope = MessageEnvelope(res.json())
+                    if (
+                        not envelope.client_id
+                        in self.metadata_handler.get_valid_players(game_id)
+                    ):
+                        raise ValueError(
+                            f"Invalid client ID {envelope.client_id} for game {game_id}"
+                        )
                     if not self.signer.verify(envelope, envelope.signature):
                         raise ValueError(
                             "Signature verification failed — rejecting message."
